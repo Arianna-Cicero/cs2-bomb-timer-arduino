@@ -1,0 +1,199 @@
+# Project Requirements
+
+This file documents all the hardware, software, and dependencies needed to run the CS2 Arduino Bomb Timer project.
+
+## Software Requirements
+
+### For Arduino Development
+
+- **Arduino IDE** v1.8.0 or later ([Download](https://www.arduino.cc/en/software))
+- **Arduino Board Support Package** for your microcontroller
+  - Arduino AVR Boards (built-in with IDE)
+  - Or custom package for your board type
+
+### For Server Development
+
+- **Node.js** v14.0.0 or later ([Download](https://nodejs.org/))
+- **npm** v6.0.0 or later (comes with Node.js)
+- **Git** (optional, for version control)
+
+### Counter-Strike 2
+
+- **Steam** installed and running
+- **Counter-Strike 2** installed (free-to-play)
+- **Administrator access** to modify CS2 config files
+
+## Hardware Requirements
+
+### Microcontroller
+
+- **Arduino Uno** (recommended for beginners)
+- **Arduino Mega** (optional, if you need more pins)
+- **Arduino Nano** (optional, for compact builds)
+- Other Arduino-compatible boards with at least 6 digital pins and 1 analog input
+
+### Display & Indicators
+
+- **16x2 LCD Display** (HD44780 compatible)
+  - Parallel interface (4-bit or 8-bit mode)
+  - Operating voltage: 5V
+- **LED** (any color)
+  - Standard 5mm LED (3-20mA)
+- **Resistor**
+  - 220Ω or 330Ω (for LED current limiting)
+
+### Connectivity
+
+- **USB Cable** (Type A to Type B or Mini-B)
+  - Connects Arduino to PC for programming and power
+  - Supports serial communication at 9600 baud
+
+### Breadboard & Wiring (Optional but Recommended)
+
+- **Breadboard** (400-point or larger)
+- **Jumper wires** (various lengths)
+- **Potentiometer** 10kΩ (optional, for LCD contrast adjustment)
+
+## Network Requirements
+
+### Local Network
+
+- **Windows PC / Mac / Linux** with CS2 installed
+- **Arduino connected via USB** to the same PC
+- **Localhost network access** (127.0.0.1:3000)
+- **No internet required** (all communication is local)
+
+## Installation Instructions
+
+### 1. Install Node.js Dependencies
+
+Navigate to the server folder and install required packages:
+
+```bash
+cd server
+npm install
+```
+
+This installs:
+
+- `express` - Web server framework
+- `body-parser` - JSON request parsing
+- `serialport` - Arduino serial communication
+
+### 2. Configure Arduino
+
+1. Install Arduino IDE from https://www.arduino.cc/en/software
+2. Connect your Arduino via USB cable
+3. In Arduino IDE:
+   - Tools → Board → Select your board type
+   - Tools → Port → Select the COM port (e.g., COM3)
+4. Upload [arduino/lcd_timer/lcd_timer.ino](../arduino/lcd_timer/)
+
+### 3. Setup Counter-Strike 2
+
+1. Copy [cs2-gsi/gamestate_integration_arduino.cfg](../cs2-gsi/)
+2. Paste into your CS2 config folder (see [cs2-gsi/README.md](../cs2-gsi/) for path)
+3. Restart Counter-Strike 2
+
+### 4. Run the Server
+
+```bash
+cd server
+node index.js
+```
+
+Expected output:
+
+```
+Serial connected: COM3
+GSI server listening on http://localhost:3000
+```
+
+## Operating System Support
+
+| OS                | Status             | Notes                               |
+| ----------------- | ------------------ | ----------------------------------- |
+| **Windows 10/11** | ✅ Fully Supported | Recommended; uses COM ports         |
+| **Linux**         | ✅ Fully Supported | Use `/dev/ttyUSB*` for serial       |
+| **macOS**         | ✅ Fully Supported | Use `/dev/tty.usbmodem*` for serial |
+
+## Bandwidth & Performance
+
+- **Serial Communication**: 9600 baud (~1.2 KB/s)
+- **HTTP Requests**: ~500 bytes per request
+- **Update Frequency**: ~30 Hz (30 requests/second from CS2)
+- **Network Load**: Minimal (localhost only)
+- **CPU Usage**: <1% (all cores)
+
+## Recommended Specifications
+
+### PC/Laptop
+
+- **OS**: Windows 10+, macOS 10.15+, or Ubuntu 18.04+
+- **RAM**: 2GB minimum (4GB+ recommended)
+- **Storage**: 500MB free space
+- **USB Ports**: At least 1 available
+
+### Arduino Setup
+
+- **Power**: 5V USB power (500mA)
+- **Temperature**: 0-50°C operating range
+- **Humidity**: Non-condensing environment
+
+## Optional Enhancements
+
+### Additional Components
+
+- **7-segment display** - For alternative countdown display
+- **Buzzer** - Audio feedback for bomb events
+- **RGB LED** - Different colors for each bomb state
+- **Relay module** - Control external devices (lights, horn, etc.)
+
+### Software Upgrades
+
+- Higher baud rate (115200) - Requires code changes on both ends
+- WiFi module (ESP8266) - Replace USB with WiFi connectivity
+- OLED display - Smaller, more modern alternative to LCD
+
+## Troubleshooting
+
+### Missing Dependencies
+
+```bash
+npm install
+```
+
+### Arduino Board Not Found
+
+- Verify USB cable is properly connected
+- Check Device Manager for "USB Serial Device"
+- Try different USB ports on your PC
+- Update Arduino IDE to latest version
+
+### Serial Port Permission Issues (Linux/macOS)
+
+```bash
+sudo usermod -a -G dialout $USER
+# Logout and login again
+```
+
+### CS2 GSI Not Working
+
+- Verify config file exists in correct CS2 folder
+- Check file permissions (should be readable)
+- Restart Counter-Strike 2 completely
+- Check Windows Firewall settings
+
+## Versioning
+
+| Component        | Version | Purpose               |
+| ---------------- | ------- | --------------------- |
+| Node.js          | v14+    | Server runtime        |
+| Arduino IDE      | v1.8+   | Sketch compilation    |
+| Counter-Strike 2 | Latest  | Game                  |
+| Express          | ^5.2.1  | Web framework         |
+| SerialPort       | ^13.0.0 | Arduino communication |
+
+---
+
+**Need help?** Check the individual README files in each folder for detailed setup instructions.
